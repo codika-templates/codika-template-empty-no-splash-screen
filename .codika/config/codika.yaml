@@ -1,0 +1,17 @@
+projectName: codika_template_empty_no_splash_screen
+appName: Codika Template Empty No Splash Screen
+organisationName: io.codika
+git: true
+gitRemoteUrl: "https://github.com/codika-templates/codika-template-empty-no-splash-screen"
+starterProject: flutter_starter
+environments: 
+  - dev
+  - prod
+  - stag
+
+params: 
+  flutter_version: 3.29.2
+  app_name: Codika Template Empty No Splash Screen
+
+executors: 
+  - android_configurations

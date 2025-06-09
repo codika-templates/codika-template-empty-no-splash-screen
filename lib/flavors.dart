@@ -1,12 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-enum Flavor {
-  dev,
-  stag,
-  prod,
-  
-}
+enum Flavor { dev, stag, prod }
 
 class F {
   static Flavor? appFlavor;
@@ -23,7 +18,7 @@ Flavor getFlavor() {
     'dev' => Flavor.dev,
     'prod' => Flavor.prod,
     'stag' => Flavor.stag,
-    
+
     null || '' => Flavor.values.first,
     _ => throw UnsupportedError('Invalid flavor: $flavor'),
   };
@@ -32,4 +27,5 @@ Flavor getFlavor() {
 extension FlavorExtension on Flavor {
   String get asString => toString().split('.').last;
 }
+
 // ignore_for_file:no-equal-switch-expression-cases,avoid-nullable-interpolation

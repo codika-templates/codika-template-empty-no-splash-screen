@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:codika_template_empty_no_splash_screen/app.dart';
 
-
 Future<void> runMainApp() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  
-  
+
   ErrorWidget.builder = errorBuilderWidget;
 
   // Add your initialization code here
-
-  
 
   runApp(const MyApp());
 }
@@ -24,13 +20,9 @@ Widget errorBuilderWidget(FlutterErrorDetails details) {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const Text(
-                "An Error Was Encountered",
-              ),
+              const Text("An Error Was Encountered"),
               const SizedBox(height: 32),
-              Text(
-                details.exception.toString(),
-              ),
+              Text(details.exception.toString()),
             ],
           ),
         ),

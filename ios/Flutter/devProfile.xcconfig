@@ -4,3 +4,5 @@
 ASSET_PREFIX=dev
 BUNDLE_NAME=Codika Template Empty No Splash Screen Dev
 BUNDLE_DISPLAY_NAME=Codika Template Empty No Splash Screen Dev
+
+#include "Dart-Defines.xcconfig"
