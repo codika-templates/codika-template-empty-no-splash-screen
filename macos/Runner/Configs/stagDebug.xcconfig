@@ -1,0 +1,6 @@
+#include "../../Flutter/stagDebug.xcconfig"
+#include "Warnings.xcconfig"
+
+ASSET_PREFIX=stag
+BUNDLE_NAME=Codika Template Empty No Splash Screen Stag
+BUNDLE_DISPLAY_NAME=Codika Template Empty No Splash Screen Stag

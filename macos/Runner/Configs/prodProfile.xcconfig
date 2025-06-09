@@ -1,0 +1,6 @@
+#include "../../Flutter/prodProfile.xcconfig"
+#include "Warnings.xcconfig"
+
+ASSET_PREFIX=prod
+BUNDLE_NAME=Codika Template Empty No Splash Screen
+BUNDLE_DISPLAY_NAME=Codika Template Empty No Splash Screen
