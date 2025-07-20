@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Define color variables
-final Color pinkColor = const Color(0xFFDA79E5);
+final Color pinkColor = const Color.fromARGB(255, 121, 146, 229);
 final Color purpleColor = const Color(0xFF6139F7);
 
 class MyApp extends StatelessWidget {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Codika Template Empty No Splash Screen',
+      title: 'Codika Starter',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
