@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../tokens/app_colors.dart';
 import '../tokens/app_density.dart';
 import '../tokens/app_radius.dart';
-import '../tokens/app_shadows.dart';
 import '../tokens/app_spacing.dart';
 import '../tokens/app_typography.dart';
 import 'app_theme_extension.dart';
@@ -12,16 +12,16 @@ class AppTheme {
   static ThemeData light({AppDensity? density}) {
     final selectedDensity = density ?? AppDensity.standard;
     final colorScheme = AppColors.primary.lightScheme;
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       colorScheme: colorScheme,
       visualDensity: selectedDensity.visualDensity,
-      
+
       // Typography
       textTheme: AppTextTheme.light,
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
@@ -35,7 +35,7 @@ class AppTheme {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         toolbarHeight: selectedDensity.appBarHeight,
       ),
-      
+
       // Button Themes
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -51,7 +51,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.primary,
@@ -62,7 +62,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: colorScheme.primary,
@@ -72,7 +72,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           foregroundColor: colorScheme.onPrimary,
@@ -85,7 +85,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -118,7 +118,7 @@ class AppTheme {
           color: AppColors.neutral.materialSwatch[600],
         ),
       ),
-      
+
       // Card Theme
       cardTheme: CardThemeData(
         elevation: 0,
@@ -130,7 +130,7 @@ class AppTheme {
         shadowColor: Colors.transparent,
         margin: EdgeInsets.zero,
       ),
-      
+
       // List Tile Theme
       listTileTheme: ListTileThemeData(
         contentPadding: selectedDensity.listItemPadding.paddingHorizontal,
@@ -143,14 +143,14 @@ class AppTheme {
           color: AppColors.neutral.materialSwatch[600],
         ),
       ),
-      
+
       // Divider Theme
       dividerTheme: DividerThemeData(
         color: AppColors.neutral.materialSwatch[100],
         thickness: 1,
         space: 1,
       ),
-      
+
       // Dialog Theme
       dialogTheme: DialogThemeData(
         elevation: 0,
@@ -164,20 +164,18 @@ class AppTheme {
           color: colorScheme.onSurface,
         ),
       ),
-      
+
       // Bottom Sheet Theme
       bottomSheetTheme: BottomSheetThemeData(
         elevation: 0,
         modalElevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.xxxl.topOnly,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.xxxl.topOnly),
         backgroundColor: colorScheme.surface,
         modalBackgroundColor: colorScheme.surface,
         shadowColor: Colors.transparent,
         modalBarrierColor: Colors.black.withOpacity(0.5),
       ),
-      
+
       // Tab Bar Theme
       tabBarTheme: TabBarThemeData(
         labelColor: colorScheme.primary,
@@ -191,30 +189,30 @@ class AppTheme {
           colorScheme.primary.withOpacity(0.1),
         ),
       ),
-      
+
       // Scaffold background
       scaffoldBackgroundColor: colorScheme.surface,
-      
+
       // Custom extension
       extensions: [
         AppThemeExtension.light().copyWith(density: selectedDensity),
       ],
     );
   }
-  
+
   static ThemeData dark({AppDensity? density}) {
     final selectedDensity = density ?? AppDensity.standard;
     final colorScheme = AppColors.primary.darkScheme;
-    
+
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: colorScheme,
       visualDensity: selectedDensity.visualDensity,
-      
+
       // Typography
       textTheme: AppTextTheme.dark,
-      
+
       // App Bar Theme
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
@@ -228,7 +226,7 @@ class AppTheme {
         systemOverlayStyle: SystemUiOverlayStyle.light,
         toolbarHeight: selectedDensity.appBarHeight,
       ),
-      
+
       // Button Themes
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -244,7 +242,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: colorScheme.primary,
@@ -255,7 +253,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: colorScheme.primary,
@@ -265,7 +263,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           foregroundColor: colorScheme.onPrimary,
@@ -278,7 +276,7 @@ class AppTheme {
           textStyle: AppTextStyle.labelLarge.style,
         ),
       ),
-      
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -311,7 +309,7 @@ class AppTheme {
           color: AppColors.neutral.materialSwatch[400],
         ),
       ),
-      
+
       // Card Theme
       cardTheme: CardThemeData(
         elevation: 0,
@@ -323,7 +321,7 @@ class AppTheme {
         shadowColor: Colors.transparent,
         margin: EdgeInsets.zero,
       ),
-      
+
       // List Tile Theme
       listTileTheme: ListTileThemeData(
         contentPadding: selectedDensity.listItemPadding.paddingHorizontal,
@@ -336,14 +334,14 @@ class AppTheme {
           color: AppColors.neutral.materialSwatch[400],
         ),
       ),
-      
+
       // Divider Theme
       dividerTheme: DividerThemeData(
         color: AppColors.neutral.materialSwatch[800],
         thickness: 1,
         space: 1,
       ),
-      
+
       // Dialog Theme
       dialogTheme: DialogThemeData(
         elevation: 0,
@@ -357,20 +355,18 @@ class AppTheme {
           color: colorScheme.onSurface,
         ),
       ),
-      
+
       // Bottom Sheet Theme
       bottomSheetTheme: BottomSheetThemeData(
         elevation: 0,
         modalElevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: AppRadius.xxxl.topOnly,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.xxxl.topOnly),
         backgroundColor: colorScheme.surface,
         modalBackgroundColor: colorScheme.surface,
         shadowColor: Colors.transparent,
         modalBarrierColor: Colors.black.withOpacity(0.7),
       ),
-      
+
       // Tab Bar Theme
       tabBarTheme: TabBarThemeData(
         labelColor: colorScheme.primary,
@@ -384,23 +380,21 @@ class AppTheme {
           colorScheme.primary.withOpacity(0.1),
         ),
       ),
-      
+
       // Scaffold background
       scaffoldBackgroundColor: colorScheme.surface,
-      
+
       // Custom extension
-      extensions: [
-        AppThemeExtension.dark().copyWith(density: selectedDensity),
-      ],
+      extensions: [AppThemeExtension.dark().copyWith(density: selectedDensity)],
     );
   }
-  
+
   // Client-specific themes can be created by customizing the color schemes
   static ThemeData clientA({bool isDark = false, AppDensity? density}) {
     // Example: customize primary colors for Client A
     return isDark ? dark(density: density) : light(density: density);
   }
-  
+
   static ThemeData clientB({bool isDark = false, AppDensity? density}) {
     // Example: customize primary colors for Client B
     return isDark ? dark(density: density) : light(density: density);

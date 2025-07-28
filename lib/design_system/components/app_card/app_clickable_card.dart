@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../../tokens/app_spacing.dart';
+import '../../services/interaction_feedback_service.dart';
+import '../../theme/app_theme_extension.dart';
 import '../../tokens/app_radius.dart';
 import '../../tokens/app_shadows.dart';
-import '../../theme/app_theme_extension.dart';
 import 'app_card.dart';
 
 /// Clickable card component with proper web interaction support
@@ -21,7 +20,7 @@ class AppClickableCard extends StatefulWidget {
   final double? height;
   final bool showHoverEffect;
   final bool showRipple;
-  final bool hapticFeedback;
+  final FeedbackType? feedbackType;
   final String? tooltip;
 
   const AppClickableCard({
@@ -38,7 +37,7 @@ class AppClickableCard extends StatefulWidget {
     this.height,
     this.showHoverEffect = true,
     this.showRipple = true,
-    this.hapticFeedback = true,
+    this.feedbackType = FeedbackType.light,
     this.tooltip,
   });
 
@@ -52,7 +51,6 @@ class _AppClickableCardState extends State<AppClickableCard>
   bool _isPressed = false;
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
-  late Animation<double> _elevationAnimation;
 
   @override
   void initState() {
@@ -62,9 +60,6 @@ class _AppClickableCardState extends State<AppClickableCard>
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
-    _elevationAnimation = Tween<double>(begin: 1.0, end: 1.5).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -84,9 +79,8 @@ class _AppClickableCardState extends State<AppClickableCard>
     setState(() => _isPressed = false);
     _animationController.reverse();
     if (widget.onTap != null) {
-      if (widget.hapticFeedback) {
-        HapticFeedback.lightImpact();
-      }
+      final feedbackType = widget.feedbackType ?? FeedbackType.light;
+      feedbackService.haptic(feedbackType);
       widget.onTap!();
     }
   }
@@ -94,6 +88,16 @@ class _AppClickableCardState extends State<AppClickableCard>
   void _handleTapCancel() {
     setState(() => _isPressed = false);
     _animationController.reverse();
+  }
+
+  void _handleTap() {
+    setState(() => _isPressed = false);
+    _animationController.reverse();
+    if (widget.onTap != null) {
+      final feedbackType = widget.feedbackType ?? FeedbackType.light;
+      feedbackService.haptic(feedbackType);
+      widget.onTap!();
+    }
   }
 
   void _handleHover(bool hovering) {
@@ -114,32 +118,38 @@ class _AppClickableCardState extends State<AppClickableCard>
     if (isInteractive && widget.showHoverEffect) {
       if (_isHovered && !_isPressed) {
         // Hover state
-        effectiveShadows = widget.variant == AppCardVariant.elevated
-            ? AppShadows.md.shadows
-            : widget.shadows;
-        effectiveBackgroundColor = widget.backgroundColor != null
-            ? Color.alphaBlend(
-                theme.colorScheme.onSurface.withOpacity(0.04),
-                widget.backgroundColor!,
-              )
-            : null;
-        effectiveBorderColor = widget.variant == AppCardVariant.outlined
-            ? theme.colorScheme.primary.withOpacity(0.3)
-            : widget.borderColor;
+        effectiveShadows =
+            widget.variant == AppCardVariant.elevated
+                ? AppShadows.md.shadows
+                : widget.shadows;
+        effectiveBackgroundColor =
+            widget.backgroundColor != null
+                ? Color.alphaBlend(
+                  theme.colorScheme.onSurface.withValues(alpha: 0.04),
+                  widget.backgroundColor!,
+                )
+                : null;
+        effectiveBorderColor =
+            widget.variant == AppCardVariant.outlined
+                ? theme.colorScheme.primary.withValues(alpha: 0.3)
+                : widget.borderColor;
       } else if (_isPressed) {
         // Pressed state
-        effectiveShadows = widget.variant == AppCardVariant.elevated
-            ? AppShadows.lg.shadows
-            : widget.shadows;
-        effectiveBackgroundColor = widget.backgroundColor != null
-            ? Color.alphaBlend(
-                theme.colorScheme.onSurface.withOpacity(0.08),
-                widget.backgroundColor!,
-              )
-            : null;
-        effectiveBorderColor = widget.variant == AppCardVariant.outlined
-            ? theme.colorScheme.primary
-            : widget.borderColor;
+        effectiveShadows =
+            widget.variant == AppCardVariant.elevated
+                ? AppShadows.lg.shadows
+                : widget.shadows;
+        effectiveBackgroundColor =
+            widget.backgroundColor != null
+                ? Color.alphaBlend(
+                  theme.colorScheme.onSurface.withValues(alpha: 0.08),
+                  widget.backgroundColor!,
+                )
+                : null;
+        effectiveBorderColor =
+            widget.variant == AppCardVariant.outlined
+                ? theme.colorScheme.primary
+                : widget.borderColor;
       }
     }
 
@@ -172,22 +182,37 @@ class _AppClickableCardState extends State<AppClickableCard>
       onEnter: (_) => _handleHover(true),
       onExit: (_) => _handleHover(false),
       cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        child: widget.showRipple
-            ? Material(
+      child:
+          widget.showRipple
+              ? Material(
                 color: Colors.transparent,
-                borderRadius: (widget.borderRadius ?? appTheme.defaultRadius).borderRadius,
+                borderRadius:
+                    (widget.borderRadius ?? appTheme.defaultRadius)
+                        .borderRadius,
                 child: InkWell(
-                  borderRadius: (widget.borderRadius ?? appTheme.defaultRadius).borderRadius,
-                  onTap: () {}, // Handled by GestureDetector
+                  borderRadius:
+                      (widget.borderRadius ?? appTheme.defaultRadius)
+                          .borderRadius,
+                  onTap: _handleTap,
+                  onTapDown: _handleTapDown,
+                  onTapCancel: _handleTapCancel,
                   child: card,
                 ),
               )
-            : card,
-      ),
+              : Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius:
+                      (widget.borderRadius ?? appTheme.defaultRadius)
+                          .borderRadius,
+                  onTap: _handleTap,
+                  onTapDown: _handleTapDown,
+                  onTapCancel: _handleTapCancel,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: card,
+                ),
+              ),
     );
 
     // Add tooltip if provided

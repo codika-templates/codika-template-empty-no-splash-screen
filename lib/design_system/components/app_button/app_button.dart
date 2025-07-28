@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../services/interaction_feedback_service.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../tokens/app_colors.dart';
 import '../../tokens/app_density.dart';
@@ -23,6 +24,7 @@ class AppButton extends StatefulWidget {
   final IconData? icon;
   final IconData? trailingIcon;
   final AppRadius? borderRadius;
+  final FeedbackType? feedbackType;
 
   const AppButton._({
     required this.child,
@@ -35,6 +37,7 @@ class AppButton extends StatefulWidget {
     this.icon,
     this.trailingIcon,
     this.borderRadius,
+    this.feedbackType,
     super.key,
   }) : assert(
          size != AppButtonSize.icon || icon != null,
@@ -53,6 +56,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     IconData? trailingIcon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -65,6 +69,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -80,6 +85,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     IconData? trailingIcon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -92,6 +98,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -107,6 +114,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     IconData? trailingIcon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -119,6 +127,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -134,6 +143,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     IconData? trailingIcon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -146,6 +156,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -161,6 +172,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     IconData? trailingIcon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -173,6 +185,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -222,6 +235,7 @@ class AppButton extends StatefulWidget {
       fullWidth: false,
       icon: icon,
       borderRadius: borderRadius,
+      feedbackType: FeedbackType.impact,
       child: const SizedBox.shrink(), // Empty child for icon buttons
     );
   }
@@ -245,6 +259,7 @@ class AppButton extends StatefulWidget {
       fullWidth: false,
       icon: icon,
       borderRadius: AppRadius.pill, // Perfectly circular
+      feedbackType: FeedbackType.impact,
       child: const SizedBox.shrink(), // Empty child for icon buttons
     );
   }
@@ -259,6 +274,7 @@ class AppButton extends StatefulWidget {
     bool isLoading = false,
     IconData? icon,
     AppRadius? borderRadius,
+    FeedbackType? feedbackType,
   }) {
     return AppButton._(
       key: key,
@@ -270,6 +286,7 @@ class AppButton extends StatefulWidget {
       fullWidth: false,
       icon: icon,
       borderRadius: borderRadius,
+      feedbackType: feedbackType,
       child: child,
     );
   }
@@ -311,7 +328,6 @@ class _AppButtonState extends State<AppButton>
     EdgeInsets padding;
     double minHeight;
     TextStyle textStyle;
-    double iconSize;
 
     // Size-based properties
     switch (widget.size) {
@@ -322,13 +338,11 @@ class _AppButtonState extends State<AppButton>
         );
         minHeight = effectiveDensity.buttonMinHeight * 0.8;
         textStyle = AppTextStyle.labelMedium.style;
-        iconSize = effectiveDensity.buttonIconSize * 0.8;
         break;
       case AppButtonSize.md:
         padding = effectiveDensity.buttonPaddingEdgeInsets;
         minHeight = effectiveDensity.buttonMinHeight;
         textStyle = AppTextStyle.labelLarge.style;
-        iconSize = effectiveDensity.buttonIconSize;
         break;
       case AppButtonSize.lg:
         padding = AppSpacing.lg.symmetric(
@@ -337,13 +351,11 @@ class _AppButtonState extends State<AppButton>
         );
         minHeight = effectiveDensity.buttonMinHeight * 1.2;
         textStyle = AppTextStyle.labelLarge.style;
-        iconSize = effectiveDensity.buttonIconSize * 1.2;
         break;
       case AppButtonSize.icon:
         padding = effectiveDensity.iconButtonPadding;
         minHeight = effectiveDensity.buttonMinHeight;
         textStyle = AppTextStyle.labelLarge.style;
-        iconSize = effectiveDensity.buttonIconSize;
         break;
       case AppButtonSize.compact:
         padding = AppSpacing.xs.symmetric(
@@ -352,7 +364,6 @@ class _AppButtonState extends State<AppButton>
         );
         minHeight = effectiveDensity.buttonMinHeight * 0.7;
         textStyle = AppTextStyle.labelSmall.style;
-        iconSize = effectiveDensity.buttonIconSize * 0.7;
         break;
     }
 
@@ -361,55 +372,51 @@ class _AppButtonState extends State<AppButton>
     Color foregroundColor;
     Color? overlayColor;
     BorderSide? side;
-    List<BoxShadow>? boxShadow;
 
     switch (widget.variant) {
       case AppButtonVariant.primary:
         backgroundColor = theme.colorScheme.primary;
         foregroundColor = theme.colorScheme.onPrimary;
-        overlayColor = theme.colorScheme.onPrimary.withOpacity(0.1);
-        boxShadow = AppShadows.sm.shadows;
+        overlayColor = theme.colorScheme.onPrimary.withValues(alpha: 0.1);
         break;
 
       case AppButtonVariant.secondary:
         backgroundColor = theme.colorScheme.surfaceContainerHighest;
         foregroundColor = theme.colorScheme.onSurface;
-        overlayColor = theme.colorScheme.onSurface.withOpacity(0.1);
+        overlayColor = theme.colorScheme.onSurface.withValues(alpha: 0.1);
         side = BorderSide(color: appTheme.border);
-        boxShadow = AppShadows.sm.shadows;
         break;
 
       case AppButtonVariant.ghost:
         backgroundColor = Colors.transparent;
         foregroundColor = theme.colorScheme.onSurface;
-        overlayColor = theme.colorScheme.onSurface.withOpacity(0.08);
+        overlayColor = theme.colorScheme.onSurface.withValues(alpha: 0.08);
         break;
 
       case AppButtonVariant.destructive:
         backgroundColor = AppColors.error.materialSwatch[500]!;
         foregroundColor = Colors.white;
-        overlayColor = Colors.white.withOpacity(0.1);
-        boxShadow = AppShadows.sm.shadows;
+        overlayColor = Colors.white.withValues(alpha: 0.1);
         break;
 
       case AppButtonVariant.outline:
         backgroundColor = Colors.transparent;
         foregroundColor = theme.colorScheme.primary;
-        overlayColor = theme.colorScheme.primary.withOpacity(0.05);
+        overlayColor = theme.colorScheme.primary.withValues(alpha: 0.05);
         side = BorderSide(color: theme.colorScheme.primary, width: 1.5);
         break;
 
       case AppButtonVariant.link:
         backgroundColor = Colors.transparent;
         foregroundColor = theme.colorScheme.primary;
-        overlayColor = theme.colorScheme.primary.withOpacity(0.1);
+        overlayColor = theme.colorScheme.primary.withValues(alpha: 0.1);
         break;
     }
 
     return ButtonStyle(
       backgroundColor: WidgetStateProperty.resolveWith((states) {
         if (states.contains(WidgetState.disabled)) {
-          return appTheme.disabled.withOpacity(0.12);
+          return appTheme.disabled.withValues(alpha: 0.12);
         }
         if (states.contains(WidgetState.hovered)) {
           return backgroundColor == Colors.transparent
@@ -490,13 +497,22 @@ class _AppButtonState extends State<AppButton>
     );
   }
 
+  VoidCallback? get _wrappedOnPressed {
+    if (widget.onPressed == null) return null;
+    return () {
+      final feedbackType = widget.feedbackType ?? FeedbackType.impact;
+      feedbackService.haptic(feedbackType);
+      widget.onPressed!();
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget button;
 
     if (widget.variant == AppButtonVariant.link) {
       button = TextButton(
-        onPressed: widget.onPressed,
+        onPressed: _wrappedOnPressed,
         style: _getButtonStyle(context),
         child: _buildContent(context),
       );
@@ -517,7 +533,7 @@ class _AppButtonState extends State<AppButton>
                 )
                 : null,
         child: ElevatedButton(
-          onPressed: widget.onPressed,
+          onPressed: _wrappedOnPressed,
           style: _getButtonStyle(context),
           child: _buildContent(context),
         ),

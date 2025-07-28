@@ -44,21 +44,45 @@ class PlaygroundDashboardPage extends StatelessWidget {
       context: context,
       children: [
         ShowcaseCard(
+          title: 'Bottom Bar',
+          description:
+              'Navigation bottom bars for switching between destinations',
+          icon: Icons.navigation,
+          onTap: () {
+            print(
+              'BottomBar card tapped - navigating to AppBottomBarShowcaseRoute',
+            );
+            context.pushRoute(const AppBottomBarShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
           title: 'Button',
           description: 'Interactive button components with various styles',
           icon: Icons.smart_button,
-          onTap: () => context.pushRoute(const ButtonShowcaseRoute()),
+          onTap: () {
+            print('Button card tapped - navigating to ButtonShowcaseRoute');
+            context.pushRoute(const ButtonShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Card',
+          description: 'Container components with interactive variants',
+          icon: Icons.credit_card,
+          onTap: () {
+            print('Card card tapped - navigating to CardShowcaseRoute');
+            context.pushRoute(const CardShowcaseRoute());
+          },
         ),
         ShowcaseCard(
           title: 'Text Field',
-          description: 'Input components (coming soon)',
+          description: 'Input components with validation and specialized types',
           icon: Icons.text_fields,
           onTap: () {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Coming soon!')));
+            print(
+              'TextField card tapped - navigating to AppTextFieldShowcaseRoute',
+            );
+            context.pushRoute(const AppTextFieldShowcaseRoute());
           },
-          isComingSoon: true,
         ),
       ],
     );
@@ -72,7 +96,10 @@ class PlaygroundDashboardPage extends StatelessWidget {
           title: 'Colors',
           description: 'Color palette and schemes',
           icon: Icons.palette,
-          onTap: () => context.pushRoute(const ColorsShowcaseRoute()),
+          onTap: () {
+            print('Colors card tapped - navigating to ColorsShowcaseRoute');
+            context.pushRoute(const ColorsShowcaseRoute());
+          },
         ),
         ShowcaseCard(
           title: 'Typography',
@@ -116,26 +143,29 @@ class PlaygroundDashboardPage extends StatelessWidget {
         const double maxCardWidth = 350.0; // Maximum card width
         const int minColumns = 1;
         const int maxColumns = 4;
-        
+
         // Calculate optimal number of columns
         final availableWidth = constraints.maxWidth;
         final spacingWidth = AppSpacing.md.value;
-        
+
         // Calculate how many cards can fit with spacing
-        int columns = ((availableWidth + spacingWidth) / (minCardWidth + spacingWidth)).floor();
-        
+        int columns =
+            ((availableWidth + spacingWidth) / (minCardWidth + spacingWidth))
+                .floor();
+
         // Clamp columns to our min/max range
         columns = columns.clamp(minColumns, maxColumns);
-        
+
         // Check if cards would be too wide with current column count
-        final cardWidth = (availableWidth - (spacingWidth * (columns - 1))) / columns;
+        final cardWidth =
+            (availableWidth - (spacingWidth * (columns - 1))) / columns;
         if (cardWidth > maxCardWidth && columns < maxColumns) {
           columns++;
         }
-        
+
         // Ensure we don't exceed our maximum columns
         columns = columns.clamp(minColumns, maxColumns);
-        
+
         return GridView.count(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),

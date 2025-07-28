@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:codika_template_empty_no_splash_screen/app.dart';
+import 'package:flutter/material.dart';
 
 Future<void> runMainApp() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

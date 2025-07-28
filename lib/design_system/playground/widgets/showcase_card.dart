@@ -1,7 +1,7 @@
-import 'package:codika_template_empty_no_splash_screen/design_system/components/cards/app_card.dart';
 import 'package:flutter/material.dart';
 
-import '../../components/cards/app_clickable_card.dart';
+import '../../components/app_card/app_card.dart';
+import '../../components/app_card/app_clickable_card.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../tokens/app_radius.dart';
 import '../../tokens/app_spacing.dart';
