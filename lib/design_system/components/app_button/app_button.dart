@@ -6,6 +6,7 @@ import '../../tokens/app_colors.dart';
 import '../../tokens/app_density.dart';
 import '../../tokens/app_radius.dart';
 import '../../tokens/app_shadows.dart';
+import '../../tokens/app_shapes.dart';
 import '../../tokens/app_spacing.dart';
 import '../../tokens/app_typography.dart';
 
@@ -25,6 +26,7 @@ class AppButton extends StatefulWidget {
   final IconData? trailingIcon;
   final AppRadius? borderRadius;
   final FeedbackType? feedbackType;
+  final String? loadingText;
 
   const AppButton._({
     required this.child,
@@ -38,6 +40,7 @@ class AppButton extends StatefulWidget {
     this.trailingIcon,
     this.borderRadius,
     this.feedbackType,
+    this.loadingText,
     super.key,
   }) : assert(
          size != AppButtonSize.icon || icon != null,
@@ -57,6 +60,7 @@ class AppButton extends StatefulWidget {
     IconData? trailingIcon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -70,6 +74,7 @@ class AppButton extends StatefulWidget {
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -86,6 +91,7 @@ class AppButton extends StatefulWidget {
     IconData? trailingIcon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -99,6 +105,7 @@ class AppButton extends StatefulWidget {
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -115,6 +122,7 @@ class AppButton extends StatefulWidget {
     IconData? trailingIcon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -128,6 +136,7 @@ class AppButton extends StatefulWidget {
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -144,6 +153,7 @@ class AppButton extends StatefulWidget {
     IconData? trailingIcon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -157,6 +167,7 @@ class AppButton extends StatefulWidget {
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -173,6 +184,7 @@ class AppButton extends StatefulWidget {
     IconData? trailingIcon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -186,6 +198,7 @@ class AppButton extends StatefulWidget {
       trailingIcon: trailingIcon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -200,6 +213,7 @@ class AppButton extends StatefulWidget {
     bool fullWidth = false,
     IconData? icon,
     IconData? trailingIcon,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -224,6 +238,7 @@ class AppButton extends StatefulWidget {
     AppDensity? density,
     bool isLoading = false,
     AppRadius? borderRadius,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -236,6 +251,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       borderRadius: borderRadius,
       feedbackType: FeedbackType.impact,
+      loadingText: loadingText,
       child: const SizedBox.shrink(), // Empty child for icon buttons
     );
   }
@@ -248,6 +264,7 @@ class AppButton extends StatefulWidget {
     AppButtonVariant variant = AppButtonVariant.primary,
     AppDensity? density,
     bool isLoading = false,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -260,6 +277,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       borderRadius: AppRadius.pill, // Perfectly circular
       feedbackType: FeedbackType.impact,
+      loadingText: loadingText,
       child: const SizedBox.shrink(), // Empty child for icon buttons
     );
   }
@@ -275,6 +293,7 @@ class AppButton extends StatefulWidget {
     IconData? icon,
     AppRadius? borderRadius,
     FeedbackType? feedbackType,
+    String? loadingText,
   }) {
     return AppButton._(
       key: key,
@@ -287,6 +306,7 @@ class AppButton extends StatefulWidget {
       icon: icon,
       borderRadius: borderRadius,
       feedbackType: feedbackType,
+      loadingText: loadingText,
       child: child,
     );
   }
@@ -324,6 +344,21 @@ class _AppButtonState extends State<AppButton>
     final appTheme = context.appTheme;
     final effectiveDensity = widget.density ?? appTheme.density;
     final radius = widget.borderRadius ?? appTheme.defaultRadius;
+
+    // Determine the shape based on radius
+    final AppShape shape = radius == AppRadius.xs
+        ? AppShape.xs
+        : radius == AppRadius.sm
+        ? AppShape.sm
+        : radius == AppRadius.md
+        ? AppShape.md
+        : radius == AppRadius.lg
+        ? AppShape.lg
+        : radius == AppRadius.xl
+        ? AppShape.xl
+        : radius == AppRadius.pill
+        ? AppShape.pill
+        : AppShape.md;
 
     EdgeInsets padding;
     double minHeight;
@@ -422,9 +457,9 @@ class _AppButtonState extends State<AppButton>
           return backgroundColor == Colors.transparent
               ? overlayColor
               : Color.alphaBlend(
-                overlayColor ?? Colors.transparent,
-                backgroundColor,
-              );
+                  overlayColor ?? Colors.transparent,
+                  backgroundColor,
+                );
         }
         return backgroundColor;
       }),
@@ -436,7 +471,7 @@ class _AppButtonState extends State<AppButton>
       }),
       overlayColor: WidgetStateProperty.all(overlayColor),
       side: side != null ? WidgetStateProperty.all(side) : null,
-      shape: WidgetStateProperty.all(radius.buttonShape),
+      shape: WidgetStateProperty.all(shape.outlinedBorder),
       padding: WidgetStateProperty.all(padding),
       minimumSize: WidgetStateProperty.all(
         widget.size == AppButtonSize.icon
@@ -456,20 +491,47 @@ class _AppButtonState extends State<AppButton>
     final iconSize = effectiveDensity.buttonIconSize;
 
     if (widget.isLoading) {
-      return SizedBox(
-        width: iconSize,
-        height: iconSize,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          valueColor: AlwaysStoppedAnimation<Color>(
-            widget.variant == AppButtonVariant.primary ||
-                    widget.variant == AppButtonVariant.secondary ||
-                    widget.variant == AppButtonVariant.destructive
-                ? Colors.white
-                : Theme.of(context).colorScheme.primary,
+      if (widget.loadingText != null) {
+        // Show loading text with spinner
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: iconSize * 0.8,
+              height: iconSize * 0.8,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  widget.variant == AppButtonVariant.primary ||
+                          widget.variant == AppButtonVariant.secondary ||
+                          widget.variant == AppButtonVariant.destructive
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ),
+            AppSpacing.xs.gapH,
+            Text(widget.loadingText!),
+          ],
+        );
+      } else {
+        // Show only spinner
+        return SizedBox(
+          width: iconSize,
+          height: iconSize,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(
+              widget.variant == AppButtonVariant.primary ||
+                      widget.variant == AppButtonVariant.secondary ||
+                      widget.variant == AppButtonVariant.destructive
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.primary,
+            ),
           ),
-        ),
-      );
+        );
+      }
     }
 
     if (widget.size == AppButtonSize.icon) {
@@ -508,6 +570,25 @@ class _AppButtonState extends State<AppButton>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final appTheme = context.appTheme;
+    final radius = widget.borderRadius ?? appTheme.defaultRadius;
+
+    // Determine the shape based on radius
+    final AppShape shape = radius == AppRadius.xs
+        ? AppShape.xs
+        : radius == AppRadius.sm
+        ? AppShape.sm
+        : radius == AppRadius.md
+        ? AppShape.md
+        : radius == AppRadius.lg
+        ? AppShape.lg
+        : radius == AppRadius.xl
+        ? AppShape.xl
+        : radius == AppRadius.pill
+        ? AppShape.pill
+        : AppShape.md;
+
     Widget button;
 
     if (widget.variant == AppButtonVariant.link) {
@@ -520,18 +601,15 @@ class _AppButtonState extends State<AppButton>
       button = Container(
         decoration:
             widget.variant == AppButtonVariant.primary ||
-                    widget.variant == AppButtonVariant.secondary ||
-                    widget.variant == AppButtonVariant.destructive
-                ? BoxDecoration(
-                  borderRadius:
-                      (widget.borderRadius ?? context.appTheme.defaultRadius)
-                          .borderRadius,
-                  boxShadow:
-                      _isHovered
-                          ? AppShadows.md.shadows
-                          : AppShadows.sm.shadows,
-                )
-                : null,
+                widget.variant == AppButtonVariant.secondary ||
+                widget.variant == AppButtonVariant.destructive
+            ? ShapeDecoration(
+                shape: shape.shapeBorder,
+                shadows: _isHovered
+                    ? AppShadows.md.shadows
+                    : AppShadows.sm.shadows,
+              )
+            : null,
         child: ElevatedButton(
           onPressed: _wrappedOnPressed,
           style: _getButtonStyle(context),

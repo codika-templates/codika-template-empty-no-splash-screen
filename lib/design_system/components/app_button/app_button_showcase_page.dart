@@ -9,8 +9,35 @@ import '../../tokens/app_typography.dart';
 import 'app_button.dart';
 
 @RoutePage()
-class ButtonShowcasePage extends StatelessWidget {
+class ButtonShowcasePage extends StatefulWidget {
   const ButtonShowcasePage({super.key});
+
+  @override
+  State<ButtonShowcasePage> createState() => _ButtonShowcasePageState();
+}
+
+class _ButtonShowcasePageState extends State<ButtonShowcasePage> {
+  bool _isSaving = false;
+  bool _isUploading = false;
+  bool _isSubmitting = false;
+
+  Future<void> _handleSave() async {
+    setState(() => _isSaving = true);
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isSaving = false);
+  }
+
+  Future<void> _handleUpload() async {
+    setState(() => _isUploading = true);
+    await Future.delayed(const Duration(seconds: 3));
+    setState(() => _isUploading = false);
+  }
+
+  Future<void> _handleSubmit() async {
+    setState(() => _isSubmitting = true);
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() => _isSubmitting = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -286,6 +313,48 @@ class ButtonShowcasePage extends StatelessWidget {
                 ),
               ],
             ),
+
+            ShowcaseSection(
+              title: 'Loading States',
+              description: 'Interactive loading examples with optional loading text',
+              children: [
+                _buildLoadingRow(
+                  'Loading with Text',
+                  () => AppButton.primary(
+                    isLoading: _isSaving,
+                    loadingText: 'Saving...',
+                    onPressed: _isSaving ? null : _handleSave,
+                    child: const Text('Save Document'),
+                  ),
+                ),
+                _buildLoadingRow(
+                  'Upload Button',
+                  () => AppButton.secondary(
+                    isLoading: _isUploading,
+                    loadingText: 'Uploading...',
+                    onPressed: _isUploading ? null : _handleUpload,
+                    child: const Text('Upload File'),
+                  ),
+                ),
+                _buildLoadingRow(
+                  'Submit Form',
+                  () => AppButton.primary(
+                    isLoading: _isSubmitting,
+                    loadingText: 'Submitting...',
+                    onPressed: _isSubmitting ? null : _handleSubmit,
+                    child: const Text('Submit Form'),
+                  ),
+                ),
+                _buildLoadingRow(
+                  'Loading (Spinner Only)',
+                  () => AppButton.ghost(
+                    isLoading: _isSaving,
+                    onPressed: _isSaving ? null : _handleSave,
+                    child: const Text('Simple Loading'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -404,6 +473,30 @@ class ButtonShowcasePage extends StatelessWidget {
           ),
           AppSpacing.md.gapH,
           buttonBuilder(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingRow(String label, AppButton Function() buttonBuilder) {
+    return Padding(
+      padding: AppSpacing.sm.paddingVertical,
+      child: Row(
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              label,
+              style: AppTextStyle.bodyMedium.style,
+            ),
+          ),
+          AppSpacing.md.gapH,
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: buttonBuilder(),
+            ),
+          ),
         ],
       ),
     );

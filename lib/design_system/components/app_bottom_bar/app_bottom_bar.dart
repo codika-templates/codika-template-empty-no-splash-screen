@@ -224,8 +224,9 @@ class _AppBottomBarState extends State<AppBottomBar> {
       final isSelected = index == widget.currentIndex;
 
       // Use active icon if provided and selected, otherwise use regular icon
-      final effectiveIcon =
-          isSelected && item.activeIcon != null ? item.activeIcon! : item.icon;
+      final effectiveIcon = isSelected && item.activeIcon != null
+          ? item.activeIcon!
+          : item.icon;
 
       Widget icon = Icon(effectiveIcon);
 
@@ -273,14 +274,14 @@ class _AppBottomBarState extends State<AppBottomBar> {
       case AppBottomBarSize.standard:
         return isSelected
             ? AppTextStyle.labelMedium.style.copyWith(
-              fontWeight: FontWeight.w600,
-            )
+                fontWeight: FontWeight.w600,
+              )
             : AppTextStyle.labelSmall.style;
       case AppBottomBarSize.comfortable:
         return isSelected
             ? AppTextStyle.labelLarge.style.copyWith(
-              fontWeight: FontWeight.w600,
-            )
+                fontWeight: FontWeight.w600,
+              )
             : AppTextStyle.labelMedium.style;
     }
   }
@@ -338,69 +339,60 @@ class _AppBottomBarState extends State<AppBottomBar> {
       shape: const CircularNotchedRectangle(),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children:
-            widget.items.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              final isSelected = index == widget.currentIndex;
-              final iconSize = _getIconSize();
+        children: widget.items.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          final isSelected = index == widget.currentIndex;
+          final iconSize = _getIconSize();
 
-              // Use active icon if provided and selected
-              final effectiveIcon =
-                  isSelected && item.activeIcon != null
-                      ? item.activeIcon!
-                      : item.icon;
+          // Use active icon if provided and selected
+          final effectiveIcon = isSelected && item.activeIcon != null
+              ? item.activeIcon!
+              : item.icon;
 
-              Widget iconWidget = Icon(
-                effectiveIcon,
-                size: iconSize,
-                color:
-                    isSelected
+          Widget iconWidget = Icon(
+            effectiveIcon,
+            size: iconSize,
+            color: isSelected
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurfaceVariant,
+          );
+
+          // Add badge if provided
+          if (item.badge != null) {
+            iconWidget = Badge(label: item.badge, child: iconWidget);
+          }
+
+          Widget child = iconWidget;
+
+          // Add label if shown
+          if (widget.showLabels ||
+              (widget.showUnselectedLabels && !isSelected)) {
+            child = Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                iconWidget,
+                AppSpacing.xs.gapV,
+                Text(
+                  item.label,
+                  style: _getTextStyle(isSelected).copyWith(
+                    color: isSelected
                         ? Theme.of(context).colorScheme.primary
                         : Theme.of(context).colorScheme.onSurfaceVariant,
-              );
-
-              // Add badge if provided
-              if (item.badge != null) {
-                iconWidget = Badge(label: item.badge, child: iconWidget);
-              }
-
-              Widget child = iconWidget;
-
-              // Add label if shown
-              if (widget.showLabels ||
-                  (widget.showUnselectedLabels && !isSelected)) {
-                child = Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    iconWidget,
-                    AppSpacing.xs.gapV,
-                    Text(
-                      item.label,
-                      style: _getTextStyle(isSelected).copyWith(
-                        color:
-                            isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(
-                                  context,
-                                ).colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              return Expanded(
-                child: InkWell(
-                  onTap: () => _handleTap(index),
-                  borderRadius: AppRadius.md.borderRadius,
-                  child: Container(
-                    padding: AppSpacing.sm.padding,
-                    child: child,
                   ),
                 ),
-              );
-            }).toList(),
+              ],
+            );
+          }
+
+          return Expanded(
+            child: InkWell(
+              onTap: () => _handleTap(index),
+              borderRadius: AppRadius.md.borderRadius,
+              child: Container(padding: AppSpacing.sm.padding, child: child),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

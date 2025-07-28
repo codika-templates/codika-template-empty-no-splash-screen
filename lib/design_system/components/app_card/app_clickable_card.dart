@@ -4,6 +4,7 @@ import '../../services/interaction_feedback_service.dart';
 import '../../theme/app_theme_extension.dart';
 import '../../tokens/app_radius.dart';
 import '../../tokens/app_shadows.dart';
+import '../../tokens/app_shapes.dart';
 import 'app_card.dart';
 
 /// Clickable card component with proper web interaction support
@@ -177,6 +178,16 @@ class _AppClickableCardState extends State<AppClickableCard>
       return card;
     }
 
+    // Determine the shape based on radius
+    final effectiveRadius = widget.borderRadius ?? appTheme.defaultRadius;
+    final AppShape shape = effectiveRadius == AppRadius.xs ? AppShape.xs
+        : effectiveRadius == AppRadius.sm ? AppShape.sm
+        : effectiveRadius == AppRadius.md ? AppShape.md
+        : effectiveRadius == AppRadius.lg ? AppShape.lg
+        : effectiveRadius == AppRadius.xl ? AppShape.xl
+        : effectiveRadius == AppRadius.pill ? AppShape.pill
+        : AppShape.md;
+
     // Make it interactive
     Widget interactiveCard = MouseRegion(
       onEnter: (_) => _handleHover(true),
@@ -186,13 +197,9 @@ class _AppClickableCardState extends State<AppClickableCard>
           widget.showRipple
               ? Material(
                 color: Colors.transparent,
-                borderRadius:
-                    (widget.borderRadius ?? appTheme.defaultRadius)
-                        .borderRadius,
+                shape: shape.shapeBorder,
                 child: InkWell(
-                  borderRadius:
-                      (widget.borderRadius ?? appTheme.defaultRadius)
-                          .borderRadius,
+                  customBorder: shape.shapeBorder,
                   onTap: _handleTap,
                   onTapDown: _handleTapDown,
                   onTapCancel: _handleTapCancel,
@@ -202,9 +209,7 @@ class _AppClickableCardState extends State<AppClickableCard>
               : Material(
                 color: Colors.transparent,
                 child: InkWell(
-                  borderRadius:
-                      (widget.borderRadius ?? appTheme.defaultRadius)
-                          .borderRadius,
+                  customBorder: shape.shapeBorder,
                   onTap: _handleTap,
                   onTapDown: _handleTapDown,
                   onTapCancel: _handleTapCancel,

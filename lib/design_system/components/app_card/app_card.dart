@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../tokens/app_spacing.dart';
 import '../../tokens/app_radius.dart';
 import '../../tokens/app_shadows.dart';
+import '../../tokens/app_shapes.dart';
 import '../../theme/app_theme_extension.dart';
 
 enum AppCardVariant { elevated, outlined, filled }
@@ -40,6 +41,15 @@ class AppCard extends StatelessWidget {
     final effectivePadding = padding ?? AppSpacing.md.padding;
     final effectiveRadius = borderRadius ?? appTheme.defaultRadius;
     
+    // Determine the shape based on radius
+    final AppShape shape = effectiveRadius == AppRadius.xs ? AppShape.xs
+        : effectiveRadius == AppRadius.sm ? AppShape.sm
+        : effectiveRadius == AppRadius.md ? AppShape.md
+        : effectiveRadius == AppRadius.lg ? AppShape.lg
+        : effectiveRadius == AppRadius.xl ? AppShape.xl
+        : effectiveRadius == AppRadius.pill ? AppShape.pill
+        : AppShape.md;
+    
     Color cardBackgroundColor;
     Border? border;
     List<BoxShadow> cardShadows;
@@ -65,11 +75,15 @@ class AppCard extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
+      decoration: ShapeDecoration(
         color: cardBackgroundColor,
-        borderRadius: effectiveRadius.borderRadius,
-        border: border,
-        boxShadow: cardShadows,
+        shape: variant == AppCardVariant.outlined && border != null
+            ? shape.shapeBorderWith(
+                color: borderColor ?? appTheme.border,
+                width: 1.0,
+              )
+            : shape.shapeBorder,
+        shadows: cardShadows,
       ),
       child: Padding(
         padding: effectivePadding,

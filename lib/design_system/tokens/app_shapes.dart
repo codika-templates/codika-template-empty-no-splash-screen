@@ -7,7 +7,7 @@ import 'app_radius.dart';
 enum AppShapeStyle {
   /// Traditional rounded rectangles with circular corners
   rounded,
-  
+
   /// Modern squircle shapes with organic, smooth corners (Flutter 3.32+)
   squircle,
 }
@@ -16,29 +16,29 @@ enum AppShapeStyle {
 class AppShapeConfig {
   /// The shape style used throughout the app
   final AppShapeStyle style;
-  
+
   /// The smoothness of the squircle effect (0.0 to 1.0)
   /// Only used when style is AppShapeStyle.squircle
   /// 0.0 = rounded rectangle, 1.0 = perfect squircle
   final double smoothness;
-  
+
   const AppShapeConfig({
     this.style = AppShapeStyle.squircle, // Default to modern squircle
     this.smoothness = 0.6, // Moderate squircle effect
   });
-  
+
   /// Conservative configuration with subtle squircle
   static const AppShapeConfig conservative = AppShapeConfig(
     style: AppShapeStyle.squircle,
     smoothness: 0.3,
   );
-  
+
   /// Aggressive configuration with strong squircle
   static const AppShapeConfig aggressive = AppShapeConfig(
     style: AppShapeStyle.squircle,
     smoothness: 0.8,
   );
-  
+
   /// Traditional rounded rectangles
   static const AppShapeConfig rounded = AppShapeConfig(
     style: AppShapeStyle.rounded,
@@ -53,63 +53,67 @@ const AppShapeConfig _globalShapeConfig = AppShapeConfig();
 class AppShape {
   final AppRadius _radius;
   final AppShapeConfig _config;
-  
+
   const AppShape._(this._radius, [this._config = _globalShapeConfig]);
-  
+
   /// Extra small shape (4px radius equivalent)
   static const AppShape xs = AppShape._(AppRadius.xs);
-  
+
   /// Small shape (8px radius equivalent)
   static const AppShape sm = AppShape._(AppRadius.sm);
-  
+
   /// Medium shape (12px radius equivalent)
   static const AppShape md = AppShape._(AppRadius.md);
-  
+
   /// Large shape (16px radius equivalent)
   static const AppShape lg = AppShape._(AppRadius.lg);
-  
+
   /// Extra large shape (24px radius equivalent)
   static const AppShape xl = AppShape._(AppRadius.xl);
-  
+
   /// Pill shape (999px radius equivalent)
   static const AppShape pill = AppShape._(AppRadius.pill);
-  
+
   /// No shape (0px radius)
   static const AppShape none = AppShape._(AppRadius.none);
-  
+
   /// Create a custom shape with specific configuration
   AppShape withConfig(AppShapeConfig config) {
     return AppShape._(_radius, config);
   }
-  
+
   /// Create a shape with custom squircle smoothness
   AppShape withSmoothness(double smoothness) {
-    return AppShape._(_radius, AppShapeConfig(
-      style: _config.style,
-      smoothness: smoothness.clamp(0.0, 1.0),
-    ));
+    return AppShape._(
+      _radius,
+      AppShapeConfig(
+        style: _config.style,
+        smoothness: smoothness.clamp(0.0, 1.0),
+      ),
+    );
   }
-  
+
   /// Create a shape with rounded style regardless of global config
   AppShape asRounded() {
     return AppShape._(_radius, AppShapeConfig.rounded);
   }
-  
+
   /// Create a shape with squircle style regardless of global config
   AppShape asSquircle([double? smoothness]) {
-    return AppShape._(_radius, AppShapeConfig(
-      style: AppShapeStyle.squircle,
-      smoothness: smoothness ?? _config.smoothness,
-    ));
+    return AppShape._(
+      _radius,
+      AppShapeConfig(
+        style: AppShapeStyle.squircle,
+        smoothness: smoothness ?? _config.smoothness,
+      ),
+    );
   }
-  
+
   /// Get the ShapeBorder for use in decorations
   ShapeBorder get shapeBorder {
     switch (_config.style) {
       case AppShapeStyle.rounded:
-        return RoundedRectangleBorder(
-          borderRadius: _radius.borderRadius,
-        );
+        return RoundedRectangleBorder(borderRadius: _radius.borderRadius);
       case AppShapeStyle.squircle:
         return SmoothRectangleBorder(
           borderRadius: _radius.borderRadius,
@@ -117,7 +121,7 @@ class AppShape {
         );
     }
   }
-  
+
   /// Get the ShapeBorder with custom border side
   ShapeBorder shapeBorderWith({
     Color? color,
@@ -129,7 +133,7 @@ class AppShape {
       width: width ?? 1.0,
       style: style ?? BorderStyle.solid,
     );
-    
+
     switch (_config.style) {
       case AppShapeStyle.rounded:
         return RoundedRectangleBorder(
@@ -144,14 +148,12 @@ class AppShape {
         );
     }
   }
-  
+
   /// Get the OutlinedBorder for buttons
   OutlinedBorder get outlinedBorder {
     switch (_config.style) {
       case AppShapeStyle.rounded:
-        return RoundedRectangleBorder(
-          borderRadius: _radius.borderRadius,
-        );
+        return RoundedRectangleBorder(borderRadius: _radius.borderRadius);
       case AppShapeStyle.squircle:
         return SmoothRectangleBorder(
           borderRadius: _radius.borderRadius,
@@ -159,7 +161,7 @@ class AppShape {
         );
     }
   }
-  
+
   /// Get the OutlinedBorder with custom side for buttons
   OutlinedBorder outlinedBorderWith({
     Color? color,
@@ -171,7 +173,7 @@ class AppShape {
       width: width ?? 1.0,
       style: style ?? BorderStyle.solid,
     );
-    
+
     switch (_config.style) {
       case AppShapeStyle.rounded:
         return RoundedRectangleBorder(
@@ -186,19 +188,19 @@ class AppShape {
         );
     }
   }
-  
+
   /// Get BorderRadius for clipping (works with both styles)
   BorderRadius get borderRadius => _radius.borderRadius;
-  
+
   /// Get the radius value
   double get radiusValue => _radius.value;
-  
+
   /// Get the current configuration
   AppShapeConfig get config => _config;
-  
+
   /// Check if this shape uses squircle
   bool get isSquircle => _config.style == AppShapeStyle.squircle;
-  
+
   /// Check if this shape uses rounded corners
   bool get isRounded => _config.style == AppShapeStyle.rounded;
 }
@@ -206,13 +208,15 @@ class AppShape {
 /// Extension to easily apply shapes to widgets
 extension AppShapeExtension on Widget {
   /// Apply an AppShape to a Container-like widget
-  Widget shaped(AppShape shape, {Color? color, Color? borderColor, double? borderWidth}) {
+  Widget shaped(
+    AppShape shape, {
+    Color? color,
+    Color? borderColor,
+    double? borderWidth,
+  }) {
     return Container(
       decoration: ShapeDecoration(
-        shape: shape.shapeBorderWith(
-          color: borderColor,
-          width: borderWidth,
-        ),
+        shape: shape.shapeBorderWith(color: borderColor, width: borderWidth),
         color: color,
       ),
       child: ClipPath(
@@ -227,7 +231,7 @@ extension AppShapeExtension on Widget {
 class AppShapeUtils {
   /// Get the global shape configuration
   static AppShapeConfig get globalConfig => _globalShapeConfig;
-  
+
   /// Create a decoration with the specified shape
   static BoxDecoration decoration({
     required AppShape shape,
@@ -239,13 +243,13 @@ class AppShapeUtils {
     return BoxDecoration(
       color: color,
       borderRadius: shape.borderRadius,
-      border: borderColor != null 
+      border: borderColor != null
           ? Border.all(color: borderColor, width: borderWidth ?? 1.0)
           : null,
       boxShadow: boxShadows,
     );
   }
-  
+
   /// Create a ShapeDecoration with the specified shape
   static ShapeDecoration shapeDecoration({
     required AppShape shape,
@@ -256,10 +260,7 @@ class AppShapeUtils {
   }) {
     return ShapeDecoration(
       color: color,
-      shape: shape.shapeBorderWith(
-        color: borderColor,
-        width: borderWidth,
-      ),
+      shape: shape.shapeBorderWith(color: borderColor, width: borderWidth),
       shadows: shadows,
     );
   }

@@ -74,6 +74,15 @@ class PlaygroundDashboardPage extends StatelessWidget {
           },
         ),
         ShowcaseCard(
+          title: 'Dialog',
+          description: 'Modal dialogs with header, content, and responsive footer',
+          icon: Icons.open_in_new,
+          onTap: () {
+            print('Dialog card tapped - navigating to DialogShowcaseRoute');
+            context.pushRoute(const DialogShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
           title: 'Text Field',
           description: 'Input components with validation and specialized types',
           icon: Icons.text_fields,

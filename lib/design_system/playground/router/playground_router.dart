@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import '../../components/app_bottom_bar/app_bottom_bar_showcase_page.dart';
 import '../../components/app_button/app_button_showcase_page.dart';
 import '../../components/app_card/app_card_showcase_page.dart';
+import '../../components/app_dialog/app_dialog_showcase_page.dart';
 import '../../components/app_text_field/app_text_field_showcase_page.dart';
 import '../pages/dashboard_page.dart';
 import '../pages/tokens/colors_showcase_page.dart';
@@ -30,6 +31,7 @@ class PlaygroundRouter extends RootStackRouter {
     ),
     AutoRoute(page: ButtonShowcaseRoute.page, path: '/components/button'),
     AutoRoute(page: CardShowcaseRoute.page, path: '/components/card'),
+    AutoRoute(page: DialogShowcaseRoute.page, path: '/components/dialog'),
     AutoRoute(
       page: AppTextFieldShowcaseRoute.page,
       path: '/components/text-field',
