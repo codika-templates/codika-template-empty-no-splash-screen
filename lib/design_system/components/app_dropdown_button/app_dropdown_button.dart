@@ -434,55 +434,61 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
     final renderBox = context.findRenderObject() as RenderBox;
     final fieldWidth = renderBox.size.width;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        minWidth: fieldWidth,
-        maxWidth: fieldWidth, // Use exact field width, not 1.5x
-        maxHeight: widget.menuHeight ?? 280,
-      ),
-      child: Material(
-        elevation: 0,
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: radius.borderRadius,
-        child: Container(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: radius.borderRadius,
-            border: Border.all(color: theme.colorScheme.primary, width: 1),
-            boxShadow: AppShadows.md.shadows,
-          ),
-          child: ListView.builder(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              itemCount: widget.items.length,
-              itemBuilder: (context, index) {
-                final item = widget.items[index];
-                final isSelected = widget.value == item.value;
+    return SafeArea(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minWidth: fieldWidth,
+          maxWidth: fieldWidth, // Use exact field width, not 1.5x
+          maxHeight: widget.menuHeight ?? 280,
+        ),
+        child: Material(
+          elevation: 0,
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: radius.borderRadius,
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surfaceContainerHighest,
+              borderRadius: radius.borderRadius,
+              border: Border.all(color: theme.colorScheme.primary, width: 1),
+              boxShadow: AppShadows.md.shadows,
+            ),
+            child: ClipRRect(
+              borderRadius: radius.borderRadius,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: widget.items.length,
+                    itemBuilder: (context, index) {
+                      final item = widget.items[index];
+                      final isSelected = widget.value == item.value;
 
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: item.enabled
-                        ? () => _handleSelection(item.value)
-                        : null,
-                    hoverColor: theme.colorScheme.onSurface.withValues(
-                      alpha: 0.04,
-                    ),
-                    highlightColor: theme.colorScheme.onSurface.withValues(
-                      alpha: 0.08,
-                    ),
-                    borderRadius: index == 0
-                        ? BorderRadius.only(
-                            topLeft: radius.borderRadius.topLeft,
-                            topRight: radius.borderRadius.topRight,
-                          )
-                        : index == widget.items.length - 1
-                        ? BorderRadius.only(
-                            bottomLeft: radius.borderRadius.bottomLeft,
-                            bottomRight: radius.borderRadius.bottomRight,
-                          )
-                        : null,
-                    child: Container(
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: item.enabled
+                              ? () => _handleSelection(item.value)
+                              : null,
+                          hoverColor: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.04,
+                          ),
+                          highlightColor: theme.colorScheme.onSurface.withValues(
+                            alpha: 0.08,
+                          ),
+                          borderRadius: index == 0
+                              ? BorderRadius.only(
+                                  topLeft: radius.borderRadius.topLeft,
+                                  topRight: radius.borderRadius.topRight,
+                                )
+                              : index == widget.items.length - 1
+                              ? BorderRadius.only(
+                                  bottomLeft: radius.borderRadius.bottomLeft,
+                                  bottomRight: radius.borderRadius.bottomRight,
+                                )
+                              : null,
+                          child: Container(
                       padding: AppInputStyling.buildContentPadding(
                         size: widget.size,
                         density: widget.density,
@@ -492,42 +498,46 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
                             ? theme.colorScheme.primary.withValues(alpha: 0.1)
                             : null,
                       ),
-                      child: Row(
-                        children: [
-                          if (item.leadingIcon != null) ...[
-                            item.leadingIcon!,
-                            const SizedBox(width: 12),
-                          ],
-                          Expanded(
-                            child: Text(
-                              item.label,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style:
-                                  AppInputStyling.buildTextStyle(
-                                    context: context,
-                                    size: widget.size,
-                                    state: item.enabled
-                                        ? AppTextFieldState.normal
-                                        : AppTextFieldState.disabled,
-                                  ).copyWith(
-                                    color: isSelected
-                                        ? theme.colorScheme.primary
-                                        : null,
+                            child: Row(
+                              children: [
+                                if (item.leadingIcon != null) ...[
+                                  item.leadingIcon!,
+                                  const SizedBox(width: 12),
+                                ],
+                                Expanded(
+                                  child: Text(
+                                    item.label,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style:
+                                        AppInputStyling.buildTextStyle(
+                                          context: context,
+                                          size: widget.size,
+                                          state: item.enabled
+                                              ? AppTextFieldState.normal
+                                              : AppTextFieldState.disabled,
+                                        ).copyWith(
+                                          color: isSelected
+                                              ? theme.colorScheme.primary
+                                              : null,
+                                        ),
                                   ),
+                                ),
+                                if (item.trailingIcon != null) ...[
+                                  const SizedBox(width: 12),
+                                  item.trailingIcon!,
+                                ],
+                              ],
                             ),
                           ),
-                          if (item.trailingIcon != null) ...[
-                            const SizedBox(width: 12),
-                            item.trailingIcon!,
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
+          ),
         ),
       ),
     );
