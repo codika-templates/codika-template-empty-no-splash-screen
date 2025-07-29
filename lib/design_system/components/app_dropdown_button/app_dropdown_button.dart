@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../services/interaction_feedback_service.dart';
@@ -42,6 +43,9 @@ class AppDropdownButton<T> extends StatefulWidget {
 
   /// Custom width for the dropdown
   final double? width;
+
+  /// Maximum width for the dropdown (prevents extremely wide dropdowns)
+  final double? maxWidth;
 
   /// Whether to enable search/filtering (default: false for selection-only)
   final bool enableSearch;
@@ -88,6 +92,9 @@ class AppDropdownButton<T> extends StatefulWidget {
   /// Menu height
   final double? menuHeight;
 
+  /// Whether to auto-size width based on content (default: true)
+  final bool autoSizeWidth;
+
   const AppDropdownButton({
     super.key,
     required this.items,
@@ -101,6 +108,8 @@ class AppDropdownButton<T> extends StatefulWidget {
     this.density,
     this.enabled = true,
     this.width,
+    this.maxWidth,
+    this.autoSizeWidth = true,
     this.enableSearch = false,
     this.enableFilter = false,
     this.requestFocusOnTap = false,
@@ -133,6 +142,8 @@ class AppDropdownButton<T> extends StatefulWidget {
     Widget? leadingIcon,
     Widget? trailingIcon,
     FeedbackType? feedbackType,
+    double? maxWidth,
+    bool autoSizeWidth = true,
   }) {
     return AppDropdownButton<T>(
       key: key,
@@ -149,6 +160,8 @@ class AppDropdownButton<T> extends StatefulWidget {
       leadingIcon: leadingIcon,
       trailingIcon: trailingIcon,
       feedbackType: feedbackType,
+      maxWidth: maxWidth,
+      autoSizeWidth: autoSizeWidth,
     );
   }
 
@@ -166,6 +179,8 @@ class AppDropdownButton<T> extends StatefulWidget {
     Widget? leadingIcon,
     Widget? trailingIcon,
     FeedbackType? feedbackType,
+    double? maxWidth,
+    bool autoSizeWidth = true,
   }) {
     return AppDropdownButton<T>(
       key: key,
@@ -182,6 +197,8 @@ class AppDropdownButton<T> extends StatefulWidget {
       leadingIcon: leadingIcon,
       trailingIcon: trailingIcon,
       feedbackType: feedbackType,
+      maxWidth: maxWidth,
+      autoSizeWidth: autoSizeWidth,
     );
   }
 
@@ -201,6 +218,7 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
   OverlayEntry? _overlayEntry;
   bool _isOpen = false;
   bool _isHovered = false;
+  double? _calculatedWidth;
 
   @override
   void initState() {
@@ -229,10 +247,26 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Calculate optimal width if auto-sizing is enabled (moved from initState)
+    if (widget.autoSizeWidth) {
+      _calculatedWidth = _calculateOptimalWidth();
+    }
+  }
+
+  @override
   void didUpdateWidget(AppDropdownButton<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.value != oldWidget.value) {
       _updateControllerText();
+    }
+    // Recalculate width if items or sizing settings changed
+    if (widget.autoSizeWidth && 
+        (widget.items != oldWidget.items || 
+         widget.size != oldWidget.size ||
+         widget.maxWidth != oldWidget.maxWidth)) {
+      _calculatedWidth = _calculateOptimalWidth();
     }
   }
 
@@ -258,6 +292,57 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
     } else {
       _controller.clear();
     }
+  }
+
+  double _calculateOptimalWidth() {
+    if (widget.items.isEmpty) return 200.0; // Default minimum width
+    
+    final textStyle = AppInputStyling.buildTextStyle(
+      context: context,
+      size: widget.size,
+      state: AppTextFieldState.normal,
+    );
+    
+    // Calculate width needed for each item
+    double maxTextWidth = 0.0;
+    for (final item in widget.items) {
+      final textPainter = TextPainter(
+        text: TextSpan(text: item.label, style: textStyle),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      
+      // Add extra width for icons and padding
+      double itemWidth = textPainter.width;
+      if (item.leadingIcon != null) itemWidth += 32; // Icon + spacing
+      if (item.trailingIcon != null) itemWidth += 32; // Icon + spacing
+      
+      maxTextWidth = math.max(maxTextWidth, itemWidth);
+    }
+    
+    // Add padding from input styling
+    final contentPadding = AppInputStyling.buildContentPadding(
+      size: widget.size,
+      density: widget.density,
+    );
+    maxTextWidth += contentPadding.horizontal;
+    
+    // Add space for trailing dropdown arrow (if no custom trailing icon)
+    if (widget.trailingIcon == null) {
+      maxTextWidth += 32; // Arrow icon + spacing
+    }
+    
+    // Apply min/max constraints
+    double finalWidth = math.max(maxTextWidth, 120.0); // Minimum 120px
+    if (widget.maxWidth != null) {
+      finalWidth = math.min(finalWidth, widget.maxWidth!);
+    } else {
+      // Default max width to prevent extremely wide dropdowns
+      final screenWidth = MediaQuery.of(context).size.width;
+      finalWidth = math.min(finalWidth, screenWidth * 0.8);
+    }
+    
+    return finalWidth;
   }
 
   AppTextFieldState get _currentState {
@@ -352,7 +437,7 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
     return ConstrainedBox(
       constraints: BoxConstraints(
         minWidth: fieldWidth,
-        maxWidth: fieldWidth * 1.5,
+        maxWidth: fieldWidth, // Use exact field width, not 1.5x
         maxHeight: widget.menuHeight ?? 280,
       ),
       child: Material(
@@ -416,6 +501,8 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
                           Expanded(
                             child: Text(
                               item.label,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                               style:
                                   AppInputStyling.buildTextStyle(
                                     context: context,
@@ -495,7 +582,11 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
       isHovered: _isHovered,
     );
 
-    return CompositedTransformTarget(
+    // Determine effective width
+    final effectiveWidth = widget.width ?? 
+        (widget.autoSizeWidth ? _calculatedWidth : null);
+
+    Widget child = CompositedTransformTarget(
       link: _layerLink,
       child: MouseRegion(
         cursor: widget.enabled
@@ -534,5 +625,15 @@ class _AppDropdownButtonState<T> extends State<AppDropdownButton<T>>
         ),
       ),
     );
+
+    // Apply width constraints if needed
+    if (effectiveWidth != null) {
+      return SizedBox(
+        width: effectiveWidth,
+        child: child,
+      );
+    }
+    
+    return child;
   }
 }
