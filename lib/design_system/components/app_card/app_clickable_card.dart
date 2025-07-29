@@ -119,38 +119,32 @@ class _AppClickableCardState extends State<AppClickableCard>
     if (isInteractive && widget.showHoverEffect) {
       if (_isHovered && !_isPressed) {
         // Hover state
-        effectiveShadows =
-            widget.variant == AppCardVariant.elevated
-                ? AppShadows.md.shadows
-                : widget.shadows;
-        effectiveBackgroundColor =
-            widget.backgroundColor != null
-                ? Color.alphaBlend(
-                  theme.colorScheme.onSurface.withValues(alpha: 0.04),
-                  widget.backgroundColor!,
-                )
-                : null;
-        effectiveBorderColor =
-            widget.variant == AppCardVariant.outlined
-                ? theme.colorScheme.primary.withValues(alpha: 0.3)
-                : widget.borderColor;
+        effectiveShadows = widget.variant == AppCardVariant.elevated
+            ? AppShadows.md.shadows
+            : widget.shadows;
+        effectiveBackgroundColor = widget.backgroundColor != null
+            ? Color.alphaBlend(
+                theme.colorScheme.onSurface.withValues(alpha: 0.04),
+                widget.backgroundColor!,
+              )
+            : null;
+        effectiveBorderColor = widget.variant == AppCardVariant.outlined
+            ? theme.colorScheme.primary.withValues(alpha: 0.3)
+            : widget.borderColor;
       } else if (_isPressed) {
         // Pressed state
-        effectiveShadows =
-            widget.variant == AppCardVariant.elevated
-                ? AppShadows.lg.shadows
-                : widget.shadows;
-        effectiveBackgroundColor =
-            widget.backgroundColor != null
-                ? Color.alphaBlend(
-                  theme.colorScheme.onSurface.withValues(alpha: 0.08),
-                  widget.backgroundColor!,
-                )
-                : null;
-        effectiveBorderColor =
-            widget.variant == AppCardVariant.outlined
-                ? theme.colorScheme.primary
-                : widget.borderColor;
+        effectiveShadows = widget.variant == AppCardVariant.elevated
+            ? AppShadows.lg.shadows
+            : widget.shadows;
+        effectiveBackgroundColor = widget.backgroundColor != null
+            ? Color.alphaBlend(
+                theme.colorScheme.onSurface.withValues(alpha: 0.08),
+                widget.backgroundColor!,
+              )
+            : null;
+        effectiveBorderColor = widget.variant == AppCardVariant.outlined
+            ? theme.colorScheme.primary
+            : widget.borderColor;
       }
     }
 
@@ -180,12 +174,18 @@ class _AppClickableCardState extends State<AppClickableCard>
 
     // Determine the shape based on radius
     final effectiveRadius = widget.borderRadius ?? appTheme.defaultRadius;
-    final AppShape shape = effectiveRadius == AppRadius.xs ? AppShape.xs
-        : effectiveRadius == AppRadius.sm ? AppShape.sm
-        : effectiveRadius == AppRadius.md ? AppShape.md
-        : effectiveRadius == AppRadius.lg ? AppShape.lg
-        : effectiveRadius == AppRadius.xl ? AppShape.xl
-        : effectiveRadius == AppRadius.pill ? AppShape.pill
+    final AppShape shape = effectiveRadius == AppRadius.xs
+        ? AppShape.xs
+        : effectiveRadius == AppRadius.sm
+        ? AppShape.sm
+        : effectiveRadius == AppRadius.md
+        ? AppShape.md
+        : effectiveRadius == AppRadius.lg
+        ? AppShape.lg
+        : effectiveRadius == AppRadius.xl
+        ? AppShape.xl
+        : effectiveRadius == AppRadius.pill
+        ? AppShape.pill
         : AppShape.md;
 
     // Make it interactive
@@ -193,31 +193,30 @@ class _AppClickableCardState extends State<AppClickableCard>
       onEnter: (_) => _handleHover(true),
       onExit: (_) => _handleHover(false),
       cursor: SystemMouseCursors.click,
-      child:
-          widget.showRipple
-              ? Material(
-                color: Colors.transparent,
-                shape: shape.shapeBorder,
-                child: InkWell(
-                  customBorder: shape.shapeBorder,
-                  onTap: _handleTap,
-                  onTapDown: _handleTapDown,
-                  onTapCancel: _handleTapCancel,
-                  child: card,
-                ),
-              )
-              : Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  customBorder: shape.shapeBorder,
-                  onTap: _handleTap,
-                  onTapDown: _handleTapDown,
-                  onTapCancel: _handleTapCancel,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  child: card,
-                ),
+      child: widget.showRipple
+          ? Material(
+              color: Colors.transparent,
+              shape: shape.shapeBorder,
+              child: InkWell(
+                customBorder: shape.shapeBorder,
+                onTap: _handleTap,
+                onTapDown: _handleTapDown,
+                onTapCancel: _handleTapCancel,
+                child: card,
               ),
+            )
+          : Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: shape.shapeBorder,
+                onTap: _handleTap,
+                onTapDown: _handleTapDown,
+                onTapCancel: _handleTapCancel,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: card,
+              ),
+            ),
     );
 
     // Add tooltip if provided

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Professional dialog component with header, scrollable content, and responsive footer sections. Provides smart scrolling where only the content area scrolls while header and footer remain fixed. Features responsive button layouts that adapt from desktop (right-aligned) to mobile (centered/stacked) configurations.
+Professional dialog component with header, scrollable content, and responsive footer sections. Provides smart scrolling where only the content area scrolls while header and footer remain fixed. Features responsive button layouts that adapt from desktop (right-aligned) to mobile (centered/stacked) configurations. Supports optional icons with adaptive positioning - horizontal layout on desktop and vertical on mobile.
 
 ## Use Cases
 
@@ -41,6 +41,9 @@ class AppDialogConfig {
   final AppRadius? borderRadius;      // Custom border radius
   final bool fullScreenOnMobile;     // Full screen on mobile devices
   final double mobileBreakpoint;     // Width threshold for mobile layout
+  final IconData? icon;               // Optional icon for header
+  final Color? iconColor;             // Icon color (defaults to primary)
+  final double? iconSize;             // Icon size (defaults to 32 on desktop, 48 on mobile)
 }
 
 class AppDialogActions {
@@ -64,8 +67,9 @@ class AppDialogActions {
 ### States
 
 - **Default**: Normal interactive state with scrollable content
-- **Mobile Layout**: Responsive layout with stacked/centered buttons below 600px width
-- **Desktop Layout**: Compact layout with right-aligned buttons above 600px width
+- **Mobile Layout**: Responsive layout with stacked/centered buttons and vertical icon placement below 600px width
+- **Desktop Layout**: Compact layout with right-aligned buttons and horizontal icon placement above 600px width
+- **With Icon**: Icon appears next to title on desktop, above title on mobile
 - **Loading**: Action buttons can show loading states
 - **Non-Dismissible**: Optional configuration to prevent outside dismissal
 
@@ -100,6 +104,28 @@ AppDialog.show(
     primaryAction: AppButton.primary(
       onPressed: () => handleSave(),
       child: Text('Save'),
+    ),
+    secondaryAction: AppButton.secondary(
+      onPressed: () => Navigator.of(context).pop(),
+      child: Text('Cancel'),
+    ),
+  ),
+);
+```
+
+### Dialog with Icon
+
+```dart
+AppDialog.show(
+  context: context,
+  dialog: AppDialog.simple(
+    title: 'Warning',
+    content: Text('This action cannot be undone.'),
+    icon: Icons.warning,
+    iconColor: Colors.amber,
+    primaryAction: AppButton.primary(
+      onPressed: () => handleAction(),
+      child: Text('Continue'),
     ),
     secondaryAction: AppButton.secondary(
       onPressed: () => Navigator.of(context).pop(),

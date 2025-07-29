@@ -56,6 +56,18 @@ class PlaygroundDashboardPage extends StatelessWidget {
           },
         ),
         ShowcaseCard(
+          title: 'Bottom Sheet',
+          description:
+              'Modal bottom sheets with headers, actions, and responsive layouts',
+          icon: Icons.vertical_align_bottom,
+          onTap: () {
+            print(
+              'BottomSheet card tapped - navigating to BottomSheetShowcaseRoute',
+            );
+            context.pushRoute(const BottomSheetShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
           title: 'Button',
           description: 'Interactive button components with various styles',
           icon: Icons.smart_button,
@@ -75,11 +87,32 @@ class PlaygroundDashboardPage extends StatelessWidget {
         ),
         ShowcaseCard(
           title: 'Dialog',
-          description: 'Modal dialogs with header, content, and responsive footer',
+          description:
+              'Modal dialogs with header, content, and responsive footer',
           icon: Icons.open_in_new,
           onTap: () {
             print('Dialog card tapped - navigating to DialogShowcaseRoute');
             context.pushRoute(const DialogShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Divider',
+          description:
+              'Visual separators with multiple styles and gradient effects',
+          icon: Icons.horizontal_rule,
+          onTap: () {
+            print('Divider card tapped - navigating to AppDividerShowcaseRoute');
+            context.pushRoute(const AppDividerShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Selectable Buttons',
+          description:
+              'Checkboxes, radio buttons, and toggle switches with consistent styling',
+          icon: Icons.check_box,
+          onTap: () {
+            print('SelectableButtons card tapped - navigating to SelectableButtonsShowcaseRoute');
+            context.pushRoute(const SelectableButtonsShowcaseRoute());
           },
         ),
         ShowcaseCard(
@@ -91,6 +124,72 @@ class PlaygroundDashboardPage extends StatelessWidget {
               'TextField card tapped - navigating to AppTextFieldShowcaseRoute',
             );
             context.pushRoute(const AppTextFieldShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Dropdown Button',
+          description: 'Dropdown selection components with overlay behavior',
+          icon: Icons.arrow_drop_down_circle,
+          onTap: () {
+            print(
+              'DropdownButton card tapped - navigating to AppDropdownButtonShowcaseRoute',
+            );
+            context.pushRoute(const AppDropdownButtonShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Wolt Modal',
+          description: 'Advanced multi-page modals with smooth navigation and animations',
+          icon: Icons.view_carousel,
+          onTap: () {
+            print(
+              'WoltModal card tapped - navigating to WoltModalShowcaseRoute',
+            );
+            context.pushRoute(const WoltModalShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Loading Indicator',
+          description: 'Animated loading indicators with multiple animation variants',
+          icon: Icons.refresh,
+          onTap: () {
+            print(
+              'LoadingIndicator card tapped - navigating to AppLoadingIndicatorShowcaseRoute',
+            );
+            context.pushRoute(const AppLoadingIndicatorShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Loading Overlay',
+          description: 'Full-screen and modal loading overlays for blocking interactions',
+          icon: Icons.layers,
+          onTap: () {
+            print(
+              'LoadingOverlay card tapped - navigating to AppLoadingOverlayShowcaseRoute',
+            );
+            context.pushRoute(const AppLoadingOverlayShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Progress Bar',
+          description: 'Progress indicators with timer, linear, and stepped variants',
+          icon: Icons.linear_scale,
+          onTap: () {
+            print(
+              'ProgressBar card tapped - navigating to AppProgressBarShowcaseRoute',
+            );
+            context.pushRoute(const AppProgressBarShowcaseRoute());
+          },
+        ),
+        ShowcaseCard(
+          title: 'Skeleton Loader',
+          description: 'Skeleton loading placeholders with shimmer animations',
+          icon: Icons.view_headline,
+          onTap: () {
+            print(
+              'SkeletonLoader card tapped - navigating to AppSkeletonLoaderShowcaseRoute',
+            );
+            context.pushRoute(const AppSkeletonLoaderShowcaseRoute());
           },
         ),
       ],

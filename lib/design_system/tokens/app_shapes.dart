@@ -77,6 +77,11 @@ class AppShape {
   /// No shape (0px radius)
   static const AppShape none = AppShape._(AppRadius.none);
 
+  /// Create an AppShape from an AppRadius
+  factory AppShape.fromRadius(AppRadius radius) {
+    return AppShape._(radius);
+  }
+
   /// Create a custom shape with specific configuration
   AppShape withConfig(AppShapeConfig config) {
     return AppShape._(_radius, config);

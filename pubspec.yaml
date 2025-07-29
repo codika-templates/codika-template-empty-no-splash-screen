@@ -37,6 +37,7 @@ dependencies:
   flutter_flavorizr: ^2.4.0
   auto_route: ^10.1.0
   smooth_corner: ^1.1.0
+  wolt_modal_sheet: ^0.11.0
 
 dev_dependencies:
   flutter_test:

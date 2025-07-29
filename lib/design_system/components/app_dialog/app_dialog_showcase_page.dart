@@ -56,6 +56,11 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
                   () => _showDialogWithActions(),
                 ),
                 _buildDialogButton(
+                  'Dialog with Icon',
+                  'Dialog with icon above the title',
+                  () => _showIconDialog(),
+                ),
+                _buildDialogButton(
                   'No Close Button',
                   'Dialog without the close button in header',
                   () => _showDialogWithoutClose(),
@@ -136,12 +141,22 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
 
             ShowcaseSection(
               title: 'Responsive Behavior',
-              description: 'Dialogs demonstrating responsive layout',
+              description: 'Dialogs demonstrating responsive layout changes',
               children: [
                 _buildDialogButton(
-                  'Mobile Responsive',
-                  'Dialog that adapts to mobile screens',
-                  () => _showResponsiveDialog(),
+                  'Responsive Icon Dialog',
+                  'Icon positioned next to title on desktop, above on mobile',
+                  () => _showResponsiveIconDialog(),
+                ),
+                _buildDialogButton(
+                  'Mobile Layout Test',
+                  'Dialog optimized for mobile with centered title',
+                  () => _showMobileLayoutDialog(),
+                ),
+                _buildDialogButton(
+                  'Desktop Layout Test',
+                  'Dialog with horizontal icon-title layout',
+                  () => _showDesktopLayoutDialog(),
                 ),
                 _buildDialogButton(
                   'Multiple Actions',
@@ -212,7 +227,7 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
       dialog: AppDialog(
         title: 'Dialog with Actions',
         content: const Text(
-          'This dialog includes both primary and secondary actions in the footer.',
+          'This dialog includes both primary and secondary actions in the footer. Notice the improved spacing and the dynamic dividers that appear only when content is scrolled.',
         ),
         actions: AppDialogActions(
           primary: AppButton.primary(
@@ -248,19 +263,45 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
     );
   }
 
+  void _showIconDialog() {
+    AppDialog.show(
+      context: context,
+      dialog: AppDialog.withIcon(
+        icon: Icons.info_outline,
+        title: 'Information',
+        content: const Text(
+          'This dialog displays an icon with responsive positioning. '
+          'On desktop/tablet: icon appears next to the title. '
+          'On mobile: icon appears above the centered title with proper spacing.',
+        ),
+        primaryAction: AppButton.primary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Got it'),
+        ),
+      ),
+    );
+  }
+
   void _showCustomHeaderDialog() {
     AppDialog.show(
       context: context,
       dialog: AppDialog(
         header: Row(
           children: [
-            const Icon(Icons.star, color: Colors.amber),
+            Container(
+              padding: EdgeInsets.all(AppSpacing.xs.value),
+              decoration: BoxDecoration(
+                color: Colors.amber.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(AppRadius.sm.value),
+              ),
+              child: const Icon(Icons.star, color: Colors.amber, size: 20),
+            ),
             AppSpacing.sm.gapH,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Custom Header', style: AppTextStyle.titleLarge.style),
+                  Text('Custom Header', style: AppTextStyle.titleMedium.style),
                   Text(
                     'With subtitle and icon',
                     style: AppTextStyle.bodySmall.style.copyWith(
@@ -273,7 +314,7 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
           ],
         ),
         content: const Text(
-          'This dialog uses a custom header widget instead of just a title string.',
+          'This dialog uses a custom header widget with better visual design and proper spacing.',
         ),
         actions: AppDialogActions(
           primary: AppButton.primary(
@@ -289,24 +330,40 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
   void _showConfirmationDialog(bool isDestructive) {
     AppDialog.show(
       context: context,
-      dialog: AppDialog.confirmation(
+      dialog: AppDialog.withIcon(
+        icon: isDestructive ? Icons.warning_amber_outlined : Icons.save_outlined,
+        iconColor: isDestructive 
+            ? Theme.of(context).colorScheme.error 
+            : Theme.of(context).colorScheme.primary,
         title: isDestructive ? 'Delete Item' : 'Save Changes',
         content: Text(
           isDestructive
               ? 'Are you sure you want to delete this item? This action cannot be undone.'
               : 'Do you want to save your changes before closing?',
         ),
-        confirmText: isDestructive ? 'Delete' : 'Save',
-        cancelText: 'Cancel',
-        isDestructive: isDestructive,
-        onConfirm: () {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(isDestructive ? 'Item deleted' : 'Changes saved'),
-            ),
-          );
-        },
+        primaryAction: isDestructive
+            ? AppButton.destructive(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Item deleted')),
+                  );
+                },
+                child: const Text('Delete'),
+              )
+            : AppButton.primary(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Changes saved')),
+                  );
+                },
+                child: const Text('Save'),
+              ),
+        secondaryAction: AppButton.secondary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
       ),
     );
   }
@@ -314,12 +371,17 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
   void _showAlertDialog() {
     AppDialog.show(
       context: context,
-      dialog: AppDialog.alert(
-        title: 'Information',
+      dialog: AppDialog.withIcon(
+        icon: Icons.check_circle_outline,
+        iconColor: Colors.green,
+        title: 'Success',
         content: const Text(
-          'This is an informational alert dialog. It only has one action button.',
+          'This is an informational alert dialog with improved visual hierarchy. The icon and cleaner spacing make it more engaging.',
         ),
-        actionText: 'Got it',
+        primaryAction: AppButton.primary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Got it'),
+        ),
       ),
     );
   }
@@ -329,25 +391,59 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
     AppDialog.show(
       context: context,
       dialog: AppDialog(
-        title: 'Long Scrollable Content',
+        title: 'Dynamic Scroll Indicators',
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              padding: EdgeInsets.all(AppSpacing.sm.value),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(AppRadius.sm.value),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                  AppSpacing.xs.gapH,
+                  Expanded(
+                    child: Text(
+                      'Scroll to see the dividers appear/disappear dynamically',
+                      style: AppTextStyle.bodySmall.style.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AppSpacing.md.gapV,
             Text(
-              'This dialog contains a lot of content that will scroll:',
-              style: AppTextStyle.bodyLarge.style,
+              'The header and footer dividers only show when content is scrolled:',
+              style: AppTextStyle.bodyLarge.style.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             AppSpacing.md.gapV,
             ...List.generate(
-              20,
+              15,
               (index) => Padding(
-                padding: AppSpacing.sm.paddingVertical,
-                child: Text(
-                  'Content line ${index + 1}: This is a long line of text that demonstrates '
-                  'how the dialog content scrolls when there is too much content to fit '
-                  'in the available space. Only the content area scrolls, while the '
-                  'header and footer remain fixed.',
-                  style: AppTextStyle.bodyMedium.style,
+                padding: AppSpacing.xs.paddingVertical,
+                child: Container(
+                  padding: EdgeInsets.all(AppSpacing.md.value),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(AppRadius.sm.value),
+                  ),
+                  child: Text(
+                    'Item ${index + 1}: This demonstrates how the dialog content scrolls smoothly '
+                    'while the header and footer remain fixed. The dividers appear dynamically '
+                    'to indicate scrollable content.',
+                    style: AppTextStyle.bodyMedium.style,
+                  ),
                 ),
               ),
             ),
@@ -513,27 +609,77 @@ class _DialogShowcasePageState extends State<DialogShowcasePage> {
   }
 
   // Responsive behavior examples
-  void _showResponsiveDialog() {
+  void _showResponsiveIconDialog() {
     AppDialog.show(
       context: context,
-      dialog: AppDialog(
-        title: 'Responsive Dialog',
+      dialog: AppDialog.withIcon(
+        icon: Icons.settings,
+        title: 'Responsive Icon Dialog',
         content: const Text(
-          'This dialog demonstrates responsive behavior. On mobile devices, '
-          'the buttons will be stacked vertically and potentially reordered. '
-          'Try resizing your browser window or viewing on different devices.',
+          'This dialog demonstrates responsive icon positioning. '
+          'On desktop/tablet, the icon appears next to the title. '
+          'On mobile, the icon appears above the centered title. '
+          'Resize your browser window to see the layout change.',
         ),
-        actions: AppDialogActions(
-          primary: AppButton.primary(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Primary Action'),
-          ),
-          secondary: AppButton.secondary(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Secondary'),
-          ),
-          reverseOnMobile: true,
-          stackOnMobile: true,
+        primaryAction: AppButton.primary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Got it'),
+        ),
+        secondaryAction: AppButton.secondary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+      ),
+    );
+  }
+
+  void _showMobileLayoutDialog() {
+    AppDialog.show(
+      context: context,
+      dialog: AppDialog.withIcon(
+        icon: Icons.phone_android,
+        iconColor: Colors.green,
+        title: 'Mobile Optimized',
+        content: const Text(
+          'This dialog is designed to demonstrate the mobile layout with:\n\n'
+          '• Close button in top-right corner\n'
+          '• Icon above the centered title\n'
+          '• Proper spacing between elements\n'
+          '• Squared close button design\n\n'
+          'The layout automatically adapts based on screen size.',
+        ),
+        config: const AppDialogConfig(
+          mobileBreakpoint: 800, // Force mobile layout for demo
+        ),
+        primaryAction: AppButton.primary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ),
+    );
+  }
+
+  void _showDesktopLayoutDialog() {
+    AppDialog.show(
+      context: context,
+      dialog: AppDialog.withIcon(
+        icon: Icons.computer,
+        iconColor: Colors.blue,
+        title: 'Desktop Optimized',
+        content: const Text(
+          'This dialog demonstrates the desktop layout with:\n\n'
+          '• Icon positioned next to the title\n'
+          '• Horizontal header layout\n'
+          '• Close button on the right side\n'
+          '• Efficient use of horizontal space\n\n'
+          'The layout provides a clean, professional appearance.',
+        ),
+        config: const AppDialogConfig(
+          mobileBreakpoint: 0, // Force desktop layout for demo
+        ),
+        primaryAction: AppButton.primary(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
         ),
       ),
     );

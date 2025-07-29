@@ -1,9 +1,11 @@
 # AppCard & AppClickableCard
 
 ## Overview
+
 AppCard provides the foundation for container-based UI elements with consistent styling and elevation. AppClickableCard extends this with interactive capabilities, hover effects, and web-optimized touch handling. These components are essential for organizing content into digestible, actionable sections.
 
 ## Use Cases
+
 - **Content Organization**: Grouping related information (user profiles, product listings, articles)
 - **Interactive Lists**: Clickable items that navigate or trigger actions
 - **Dashboard Widgets**: Summary cards showing key metrics or status
@@ -16,11 +18,13 @@ AppCard provides the foundation for container-based UI elements with consistent 
 ### AppCard (Base Component)
 
 #### Required Parameters
+
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `child` | `Widget` | Content displayed inside the card |
 
 #### Optional Parameters
+
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `variant` | `AppCardVariant` | `elevated` | Visual style variant |
@@ -35,6 +39,7 @@ AppCard provides the foundation for container-based UI elements with consistent 
 ### AppClickableCard (Interactive Extension)
 
 #### Additional Parameters
+
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `onTap` | `VoidCallback?` | `null` | Tap callback (null = non-interactive) |
@@ -44,6 +49,7 @@ AppCard provides the foundation for container-based UI elements with consistent 
 | `tooltip` | `String?` | `null` | Tooltip text on hover |
 
 ### Enums & Types
+
 ```dart
 enum AppCardVariant { elevated, outlined, filled }
 enum FeedbackType { light, medium, heavy, selection, impact, error, success }
@@ -52,11 +58,13 @@ enum FeedbackType { light, medium, heavy, selection, impact, error, success }
 ## Variants & States
 
 ### Variants
+
 - **Elevated**: Default card with shadow and raised appearance
 - **Outlined**: Bordered card with transparent background
 - **Filled**: Card with tinted background, no shadow
 
 ### States (AppClickableCard only)
+
 - **Default**: Normal appearance with subtle interactive hints
 - **Hover**: Enhanced shadow, slight background tint, cursor change (web)
 - **Pressed**: Scaled down slightly with darker background
@@ -65,6 +73,7 @@ enum FeedbackType { light, medium, heavy, selection, impact, error, success }
 ## Usage Examples
 
 ### Basic Card
+
 ```dart
 AppCard(
   child: Column(
@@ -78,6 +87,7 @@ AppCard(
 ```
 
 ### Variant Examples
+
 ```dart
 // Elevated card (default)
 AppCard(
@@ -99,6 +109,7 @@ AppCard(
 ```
 
 ### Interactive Cards
+
 ```dart
 AppClickableCard(
   variant: AppCardVariant.elevated,
@@ -113,6 +124,7 @@ AppClickableCard(
 ```
 
 ### Advanced Customization
+
 ```dart
 AppCard(
   variant: AppCardVariant.elevated,
@@ -127,6 +139,7 @@ AppCard(
 ```
 
 ### Dashboard Widget Example
+
 ```dart
 AppClickableCard(
   variant: AppCardVariant.filled,
@@ -155,18 +168,21 @@ AppClickableCard(
 ## Customization Guidelines
 
 ### When to Extend
+
 - Creating domain-specific card types (e.g., ProductCard, UserCard)
 - Adding new visual variants for brand-specific styling
 - Implementing specialized interaction patterns
 - Adding analytics or tracking capabilities
 
 ### How to Modify
+
 1. **New Variants**: Add to `AppCardVariant` enum and update styling logic
 2. **Custom Cards**: Create wrapper components that use AppCard/AppClickableCard
 3. **Interaction States**: Extend the state management in AppClickableCard
 4. **Styling**: Override colors, shadows, or radius through parameters
 
 ### Code Patterns
+
 ```dart
 // Custom product card component
 class ProductCard extends StatelessWidget {
@@ -203,6 +219,7 @@ class ProductCard extends StatelessWidget {
 AppClickableCard integrates with the global `InteractionFeedbackService` to provide consistent haptic and audio feedback across the application.
 
 ### Feedback Types
+
 - **light**: Subtle feedback for gentle interactions
 - **medium**: Standard feedback for normal interactions  
 - **heavy**: Strong feedback for important actions
@@ -212,6 +229,7 @@ AppClickableCard integrates with the global `InteractionFeedbackService` to prov
 - **success**: Success pattern for completed actions
 
 ### Usage
+
 ```dart
 AppClickableCard(
   feedbackType: FeedbackType.selection,
@@ -221,6 +239,7 @@ AppClickableCard(
 ```
 
 ### Global Configuration
+
 ```dart
 // Disable all haptic feedback
 feedbackService.configure(enableHaptics: false);
@@ -230,6 +249,7 @@ feedbackService.configure(enableAudio: true);
 ```
 
 ## Related Components
+
 - **AppButton**: Use for single-action items instead of clickable cards
 - **ListTile**: Consider for simple list items with standard layouts
 - **Container**: Use for non-semantic grouping without card semantics
@@ -238,6 +258,7 @@ feedbackService.configure(enableAudio: true);
 ## Design System Integration
 
 ### Design Tokens Used
+
 - **Colors**: `surface`, `surfaceContainerHighest`, `primary`, `outline`
 - **Spacing**: `md` default padding, customizable with all spacing tokens
 - **Radius**: `defaultRadius` from theme, customizable with `AppRadius`
@@ -245,12 +266,14 @@ feedbackService.configure(enableAudio: true);
 - **Typography**: Flexible - uses whatever styles are provided in child
 
 ### Theme Integration
+
 - Automatically adapts to light/dark themes
 - Uses theme surface colors and elevation
 - Respects theme border colors and outline styles
 - Supports theme extension properties
 
 ## Accessibility
+
 - Semantic container role for screen readers
 - Focus indicators with proper contrast ratios
 - Keyboard navigation support (Enter/Space for clickable cards)
@@ -259,13 +282,16 @@ feedbackService.configure(enableAudio: true);
 - High contrast mode support
 
 ## Platform Considerations
+
 - **Web**: Hover states, cursor changes, focus rings, keyboard shortcuts
 - **Mobile**: Haptic feedback, appropriate touch targets, gesture recognition
 - **Desktop**: Keyboard navigation, context menus, precise mouse interactions
 - **All Platforms**: Smooth animations, theme adaptations, responsive sizing
 
 ## Examples in Playground
+
 See `app_card_showcase_page.dart` for comprehensive examples including:
+
 - All variants with different content types
 - Interactive states and behaviors
 - Custom sizing and styling options
@@ -274,6 +300,7 @@ See `app_card_showcase_page.dart` for comprehensive examples including:
 - Performance considerations for large lists
 
 ## Migration Notes
+
 - Replaces custom card implementations with standardized design
 - Interactive cards now handle all states internally
 - Hover effects are built-in for web platforms
